@@ -87,6 +87,19 @@ window.addEventListener('mousedown', () => {
     }
 });
 
+// Create overlay text element
+const overlayText = document.createElement('div');
+overlayText.style.position = 'absolute';
+overlayText.style.top = '8px'; // Position from the top
+overlayText.style.left = '50%'; // Center horizontally
+overlayText.style.transform = 'translateX(-50%)'; // Adjust for centering
+overlayText.style.color = '1d1d1d'; // Text color
+overlayText.style.fontSize = '18px'; // Font size
+overlayText.style.fontFamily = 'Ariel, sans-serif'; // Change font type here
+overlayText.style.pointerEvents = 'none'; // Prevent mouse events on the text
+overlayText.innerText = 'Exercise 1'; // Set the text
+document.body.appendChild(overlayText);
+
 animate();
 
 // Render function
@@ -116,4 +129,15 @@ window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+});
+
+// Function to update the text excerpt
+function updateTextExcerpt(title, description) {
+    document.getElementById('exerciseExcerpt').querySelector('h2').innerText = title;
+    document.getElementById('exerciseDescription').innerText = description;
+}
+
+// Example usage: Update text on a button click
+document.getElementById('someButton').addEventListener('click', () => {
+    updateTextExcerpt('New Type of Exercise', 'This is a new description based on user action.');
 });
