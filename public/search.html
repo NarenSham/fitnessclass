@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Exercises</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Host Grotesk', sans-serif;
+            background-color: #F4F4F5;
+            min-height: 100vh;
+            padding-bottom: 60px;
+
+            color: #666666;
+        }
+
+        .search-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh; /* Full height */
+            overflow: hidden; /* Prevent scrolling */
+        }
+
+        .search-container {
+            flex: 1; /* Allow the search container to grow */
+            overflow-y: auto; /* Enable scrolling within the search container if needed */
+            padding: 20px; /* Adjusted padding for consistency */
+            max-width: 100%; /* Prevent overflow */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .search-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-input-container {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: 25px;
+            padding: 0 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            padding: 15px 0;
+            width: 100%;
+            font-size: 16px;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            margin-top: 5px;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .suggestion-item:hover {
+            background-color: #f8bbd0;
+        }
+
+        .exercise-display {
+            background: #fce4ec;  /* Matching pink background */
+            padding: 20px; /* Keep padding for whitespace */
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: none;
+            width: 100%; /* Ensure full width */
+            border-radius: 0; /* No borders */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .exercise-container {
+            background: #fce4ec; /* Matching pink background */
+            width: 100%; /* Ensure full width */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .exercise-header {
+            margin-bottom: 15px;
+        }
+
+        .exercise-header h2 {
+            margin: 0;
+            color: #e91e63;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .exercise-details {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .exercise-details p {
+            margin: 5px 0;
+        }
+
+        model-viewer {
+            width: 100%;
+            height: 300px; /* Adjusted height to fit better */
+            background-color: #fce4ec;  /* Matching pink background */
+            border-radius: 8px;
+            margin: 0;
+        }
+
+        .recent-searches {
+            background: white;
+            border-radius: 10px;
+            padding: 20px; /* Increased padding for more whitespace */
+            margin-top: 20px; /* Space between exercise display and recent searches */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            width: 100%; /* Ensure full width */
+            box-sizing: border-box; /* Include padding in width */
+        }
+
+        .recent-searches h3 {
+            margin-top: 0;
+            color: #e91e63;
+            letter-spacing: 1px;
+        }
+
+        .recent-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: #f5f5f5;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-family: 'Host Grotesk', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .recent-item:hover {
+            background: #f8bbd0;
+        }
+
+        .nav-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-icon {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .nav-icon i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-icon span {
+            font-size: 10px;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .nav-icon.active {
+            color: #e91e63;
+        }
+
+        .not-found {
+            color: #f44336;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+
+        .recent-searches {
+            margin-top: 20px;
+            padding: 20px;
+        }
+
+        .recent-searches h3 {
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+            margin-bottom: 10px;
+        }
+
+        .recent-searches-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recent-searches-list li {
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+            padding: 8px 0;
+            cursor: pointer;
+        }
+
+        .search-results {
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .search-result-item {
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .exercise-details {
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .exercise-details h2 {
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .exercise-details p {
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        /* Keep existing styles but update fonts */
+        input[type="search"] {
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        button {
+            font-family: 'Host Grotesk', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <div class="search-header">
+            <svg width="35" height="35" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <g id="letterF">
+                        <line x1="35" y1="67" x2="35" y2="140" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="33" y1="70" x2="88" y2="45" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="35" y1="70" x2="80" y2="90" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                    <g id="letterC">
+                        <line x1="105" y1="36" x2="105" y2="165" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="161" x2="170" y2="125" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="40" x2="170" y2="70" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                </defs>
+                <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" fill="#fce4ec" stroke="#4E4E4E" stroke-width="10" />
+                <use href="#letterF" />
+                <use href="#letterC" />
+            </svg>
+            <div class="search-box">
+                <div class="search-input-container">
+                    <input type="text" 
+                           class="search-input" 
+                           placeholder="Search for an exercise..."
+                           id="searchInput">
+                </div>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+                <div class="not-found" id="notFound">Exercise not found</div>
+            </div>
+        </div>
+
+        <div class="exercise-display" id="exerciseDisplay">
+            <!-- Selected exercise will be displayed here -->
+        </div>
+
+        <div class="recent-searches" id="recentSearches">
+            <h3>Recent Searches</h3>
+            <!-- Recent searches will be populated here -->
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="login.html" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="search.html" class="nav-icon active">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+        </a>
+        <a href="workout-history.html" class="nav-icon">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Log</span>
+        </a>
+        <a href="view-workouts.html" class="nav-icon">
+            <i class="fas fa-dumbbell"></i>
+            <span>Workouts</span>
+        </a>
+        <a href="profile.html" class="nav-icon">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script>
+        let recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
+        const maxRecentSearches = 5;
+
+        async function fetchWorkoutLibrary() {
+            const response = await fetch('/api/workout-library');
+            if (!response.ok) throw new Error('Failed to fetch workout library');
+            return response.json();
+        }
+
+        async function initializeSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const suggestionsDiv = document.getElementById('searchSuggestions');
+            const notFoundDiv = document.getElementById('notFound');
+            
+            const workoutLibrary = await fetchWorkoutLibrary();
+
+            searchInput.addEventListener('input', (e) => {
+                const value = e.target.value.toLowerCase();
+                const suggestions = Object.keys(workoutLibrary)
+                    .filter(name => name.toLowerCase().includes(value))
+                    .slice(0, 5);
+
+                if (value && suggestions.length === 0) {
+                    notFoundDiv.style.display = 'block';
+                    suggestionsDiv.style.display = 'none';
+                } else {
+                    notFoundDiv.style.display = 'none';
+                    if (value && suggestions.length > 0) {
+                        suggestionsDiv.innerHTML = suggestions
+                            .map(name => `<div class="suggestion-item">${name}</div>`)
+                            .join('');
+                        suggestionsDiv.style.display = 'block';
+                    } else {
+                        suggestionsDiv.style.display = 'none';
+                    }
+                }
+            });
+
+            suggestionsDiv.addEventListener('click', (e) => {
+                if (e.target.classList.contains('suggestion-item')) {
+                    const exerciseName = e.target.textContent;
+                    displayExercise(exerciseName, workoutLibrary[exerciseName]);
+                    addToRecentSearches(exerciseName);
+                    searchInput.value = '';
+                    suggestionsDiv.style.display = 'none';
+                }
+            });
+
+            // Initial load of recent searches
+            updateRecentSearchesDisplay();
+        }
+
+        function displayExercise(name, exercise) {
+            const displayDiv = document.getElementById('exerciseDisplay');
+            displayDiv.innerHTML = `
+                <div class="exercise-container">
+                    <div class="exercise-header">
+                        <h2>${name}</h2>
+                    </div>
+                    <div class="exercise-details">
+                        <p><strong>Muscle Groups:</strong> ${exercise.muscleGroups.join(', ')}</p>
+                        <p><strong>Difficulty:</strong> ${exercise.difficulty}</p>
+                    </div>
+                    <model-viewer
+                        id="exerciseModel"
+                        src="${exercise.glbPath}"
+                        auto-rotate
+                        camera-controls
+                        ar
+                        animation-name="Action"
+                        autoplay
+                        shadow-intensity="2"
+                        shadow-softness="1"
+                        exposure="0.7"
+                        camera-orbit="0deg 75deg 6.2m"
+                        alt="${name} demonstration">
+                    </model-viewer>
+                </div>
+            `;
+            displayDiv.style.display = 'block';
+
+            const modelViewer = document.getElementById('exerciseModel');
+            modelViewer.addEventListener('load', () => {
+                modelViewer.animationName = "Action";
+                modelViewer.play();
+            });
+        }
+
+        function addToRecentSearches(exerciseName) {
+            recentSearches = recentSearches.filter(name => name !== exerciseName);
+            recentSearches.unshift(exerciseName);
+            if (recentSearches.length > maxRecentSearches) {
+                recentSearches.pop();
+            }
+            localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+            updateRecentSearchesDisplay();
+        }
+
+        function updateRecentSearchesDisplay() {
+            const recentDiv = document.getElementById('recentSearches');
+            if (recentSearches.length === 0) {
+                recentDiv.style.display = 'none';
+                return;
+            }
+            
+            recentDiv.innerHTML = `
+                <h3>Recent Searches</h3>
+                ${recentSearches.map(name => 
+                    `<div class="recent-item">${name}</div>`
+                ).join('')}
+            `;
+            recentDiv.style.display = 'block';
+
+            // Add click handlers for recent items
+            document.querySelectorAll('.recent-item').forEach(item => {
+                item.addEventListener('click', async () => {
+                    const workoutLibrary = await fetchWorkoutLibrary();
+                    const exerciseName = item.textContent;
+                    displayExercise(exerciseName, workoutLibrary[exerciseName]);
+                    addToRecentSearches(exerciseName);
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeSearch);
+    </script>
+</body>
+</html> 

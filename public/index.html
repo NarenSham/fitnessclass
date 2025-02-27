@@ -2,180 +2,429 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>FitnessClass - Your Personal Fitness Journey</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
             margin: 0;
-            overflow: hidden;
-            background-color: #fce4ec; /* Set a background color */
+            padding: 0;
+            font-family: 'Host Grotesk', sans-serif;
+            background-color: #F4F4F5;
+            color: #4E4E4E;
+            letter-spacing: 1px;
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                        url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center items horizontally */
-            justify-content: flex-start; /* Start from the top */
-            height: 100vh; /* Full height */
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            padding: 0 20px;
         }
-        #canvas {
-            position: fixed; /* Use fixed positioning */
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0; /* Send the canvas to the background */
-            pointer-events: none; /* Disable pointer events on the canvas */
+
+        .logo-container {
+            margin-bottom: 30px;
         }
-        #fitnessText {
-            border-top: 140px solid transparent; /* Create space above with a transparent border */
-            border-bottom: 100px solid transparent;
-            color: #1d1d1d; /* Text color */
-            font-size: 32px; /* Font size */
-            font-family: 'Helvetica ', sans-serif; /* Font type */
+
+        .app-title {
+            font-size: 48px;
+            margin: 20px 0;
+            letter-spacing: 2px;
+            text-transform: lowercase;
             font-weight: 500;
-            letter-spacing: 18px; /* Spacing between letters */
-            text-align: center; /* Center text */
-            z-index: 1; /* Bring the text to the front */
         }
-        .highlight {
-            color: #FF9800; /* Change this to your desired color for "class" */
+
+        .app-title .highlight {
+            color: #e91e63;
         }
-        #goToWorkoutScreen {
-            background-color: #80CBC4; /* Button color */
-            color: #ffffff; /* Text color for the button */
-            padding: 10px 20px; /* Add some padding to the button */
-            font-size: 18px; /* Font size for the button */
-            z-index: 2; /* Bring the button to the front */
-            margin-top: 200px solid transparent;
-            margin-bottom: 200px solid transparent; /* Space from the bottom of the screen */
-            border: none; /* Remove default border */
-            border-radius: 5px; /* Optional: add rounded corners */
-            cursor: pointer; /* Change cursor to pointer on hover */
+
+        .hero-text {
+            font-size: 24px;
+            margin-bottom: 40px;
+            max-width: 600px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .cta-button {
+            padding: 15px 0;
+            width: 180px;
+            font-size: 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .primary-button {
+            background-color: #e91e63;
+            color: white;
+            border: 2px solid #e91e63;
+        }
+
+        .primary-button:hover {
+            background-color: #d81557;
+            border-color: #d81557;
+        }
+
+        .secondary-button {
+            background-color: transparent;
+            color: #e91e63;
+            border: 2px solid #e91e63;
+        }
+
+        .secondary-button:hover {
+            background-color: #e91e63;
+            color: white;
+        }
+
+        .features-section {
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .feature-card {
+            padding: 35px 25px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            min-height: 250px;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .feature-card i {
+            font-size: 38px;
+            color: #e91e63;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            margin: 15px 0;
+            font-size: 22px;
+            color: #4E4E4E;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .features-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 40px 20px;
+                gap: 25px;
+            }
             
+            .feature-card {
+                min-height: 280px;
+            }
         }
-        #goToWorkoutScreen:hover {
-            background-color: #e68a00; /* Darker shade on hover */
+
+        @media (max-width: 480px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 30px 15px;
+            }
+            
+            .feature-card {
+                min-height: auto;
+                padding: 30px 20px;
+                margin-bottom: 0;
+            }
+
+            .feature-card h3 {
+                font-size: 20px;
+                margin: 12px 0;
+            }
+
+            .feature-card p {
+                font-size: 15px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+                padding: 0 20px;
+            }
+
+            .cta-button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    
-    <div id="fitnessText">_fitness<span class="highlight">class</span></div> <!-- Header text -->
-    
-    <button id="goToWorkoutScreen">View Workouts</button> <!-- Button to view workouts -->
+    <section class="hero-section">
+        <div class="logo-container">
+            <svg width="120" height="120" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <g id="letterF">
+                        <line x1="35" y1="67" x2="35" y2="140" stroke="white" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="33" y1="70" x2="88" y2="45" stroke="white" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="35" y1="70" x2="80" y2="90" stroke="white" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                    <g id="letterC">
+                        <line x1="105" y1="36" x2="105" y2="165" stroke="white" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="161" x2="170" y2="125" stroke="white" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="40" x2="170" y2="70" stroke="white" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                </defs>
+                <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" fill="transparent" stroke="white" stroke-width="10" />
+                <use href="#letterF" />
+                <use href="#letterC" />
+            </svg>
+            <h1 class="app-title">fitness<span class="highlight">class</span></h1>
+        </div>
+        <p class="hero-text">Experience the future of fitness with AI-powered workout recommendations and seamless 3D exercise demonstrations.</p>
+        <div class="cta-buttons">
+            <a href="login.html" class="cta-button primary-button">Login</a>
+            <a href="register.html" class="cta-button secondary-button">Get Started</a>
+        </div>
+    </section>
 
-    <script type="importmap">
-        {
-          "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js",
-            "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/"
-          }
-        }
-    </script>
-    <script type="module">
-        import * as THREE from 'three';
-        import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0xfce4ec);
-        const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+    <section class="features-section">
+        <div class="features-grid">
+            <div class="feature-card">
+                <i class="fas fa-brain"></i>
+                <h3>AI-Powered Workouts</h3>
+                <p>Get intelligent workout recommendations tailored to your goals, experience, and preferences using advanced AI technology.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-cube"></i>
+                <h3>Seamless Demonstrations</h3>
+                <p>View 3D exercise techniques without interrupting your audio. Our WebGL renders let you keep your music or podcast playing while checking form.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-stopwatch"></i>
+                <h3>Optimize Your Time</h3>
+                <p>Maximize workout efficiency with quick form checks in a single view. Reduce rest time between sets by having all exercise information readily available.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Access Anywhere</h3>
+                <p>Take your workouts with you anywhere with our mobile-friendly platform and offline exercise demonstrations.</p>
+            </div>
+            <div class="feature-card">
+                <i class="fas fa-chart-line"></i>
+                <h3>Track Progress</h3>
+                <p>Monitor your fitness journey with detailed progress tracking and analytics to stay motivated and achieve your goals.</p>
+            </div>
+        </div>
+    </section>
 
-        // Define circular motion variables
-        const radius = 4; // Radius of the circular path
-        let angle = 1; // Initial angle for circular motion
-        const speed = 0.002; // Speed of rotation
-        let isOrbiting = false; // Flag to check if orbiting mode is active
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <div class="footer-logo">
+                    <svg width="50" height="50" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <g id="letterF-footer">
+                                <line x1="35" y1="67" x2="35" y2="140" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                                <line x1="33" y1="70" x2="88" y2="45" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                                <line x1="35" y1="70" x2="80" y2="90" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                            </g>
+                            <g id="letterC-footer">
+                                <line x1="105" y1="36" x2="105" y2="165" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                                <line x1="105" y1="161" x2="170" y2="125" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                                <line x1="105" y1="40" x2="170" y2="70" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                            </g>
+                        </defs>
+                        <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" fill="#F4F4F5" stroke="#4E4E4E" stroke-width="10" />
+                        <use href="#letterF-footer" />
+                        <use href="#letterC-footer" />
+                    </svg>
+                    <h3 class="footer-title">fitness<span class="highlight">class</span></h3>
+                </div>
+                <p class="footer-description">
+                    Transform your fitness journey with AI
+                </p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms.html">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FitnessClass. All rights reserved.</p>
+        </div>
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
-
-        // Lighting
-        const light = new THREE.AmbientLight(0xffffff, 2);
-        scene.add(light);
-
-        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-        directionalLight.position.set(1, 3, 2);
-        scene.add(directionalLight);
-
-        // Add back light
-        const backLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        backLight.position.set(-1, 2, -2);
-        scene.add(backLight);
-
-        let model, mixer;
-
-        // Load GLB Model
-        const loader = new GLTFLoader();
-        loader.load('lowpoly9.glb', function (gltf) {
-            model = gltf.scene;
-            model.position.set(0, 2, 0); // Adjusted Y position to 1.5 for centering
-            model.scale.set(1.3 , 1.3 , 1.3 ); // Adjusted scale to 1 for testing
-            scene.add(model);
-
-            // Initialize mixer within the load callback
-            mixer = new THREE.AnimationMixer(model);
-            
-            // Array of clips
-            const clips = gltf.animations;
-            console.log("Loaded animations:", clips); // Debugging log to see available animations
-            const clip = THREE.AnimationClip.findByName(clips, 'Burpee'); // Find the clip named 'Test'
-            
-            if (clip) {
-                const action = mixer.clipAction(clip);
-                action.play(); // Play the animation
-                console.log("Playing animation:", clip.name); // Debugging log
-            } else {
-                console.error("Clip named 'Test' not found.");
+        <style>
+            .site-footer {
+                background-color: white;
+                padding: 60px 20px 20px;
+                margin-top: 80px;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             }
 
-        }, undefined, function (error) {
-            console.error("Error loading model:", error);
-        });
-
-        const clock = new THREE.Clock(); // Moved clock initialization here
-        
-        animate();
-
-        function animate() {
-            requestAnimationFrame(animate); // Ensure the animation loop is continuous
-            if (mixer) {
-                const delta = clock.getDelta();
-                mixer.update(delta); // Update the mixer for animations
+            .footer-content {
+                max-width: 1200px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 40px;
+                padding-bottom: 40px;
             }
 
-            if (!isOrbiting) {
-                // Update camera position for horizontal circular pan
-                angle += speed; // Increment the angle
-                camera.position.x = radius * Math.cos(angle); // Update X position
-                camera.position.z = radius * Math.sin(angle); // Update Z position
-                camera.position.y = 3; // Keep the camera height constant
-                camera.lookAt(0, 0, 0); // Make the camera look at the origin
-            } else {
-                controls.enabled = true; 
+            .footer-section {
+                padding: 0 20px;
             }
 
-            renderer.render(scene, camera);
-        }
+            .footer-logo {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
 
-        // Event listener for the "View Workouts" button
-        document.getElementById('goToWorkoutScreen').addEventListener('click', () => {
-            // Navigate to the workouts screen
-            window.location.href = '/workouts'; // Redirect to the /workouts endpoint
-        });
+            .footer-title {
+                font-size: 20px;
+                margin: 0;
+                color: #4E4E4E;
+                letter-spacing: 2px;
+                text-transform: lowercase;
+            }
 
-        // Resize Event
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+            .footer-title .highlight {
+                color: #e91e63;
+            }
 
-        // Function to update the text excerpt
-        function updateTextExcerpt(title, description) {
-            document.getElementById('exerciseExcerpt').querySelector('h2').innerText = title;
-            document.getElementById('exerciseDescription').innerText = description;
-        }
+            .footer-description {
+                color: #666;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
 
-    </script>
+            .footer-section h4 {
+                color: #4E4E4E;
+                margin-bottom: 20px;
+                font-size: 18px;
+                letter-spacing: 1px;
+            }
+
+            .footer-section ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .footer-section ul li {
+                margin-bottom: 12px;
+            }
+
+            .footer-section ul a {
+                color: #666;
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            .footer-section ul a:hover {
+                color: #e91e63;
+            }
+
+            .social-links {
+                display: flex;
+                gap: 15px;
+            }
+
+            .social-links a {
+                color: #4E4E4E;
+                font-size: 20px;
+                transition: color 0.3s ease;
+            }
+
+            .social-links a:hover {
+                color: #e91e63;
+            }
+
+            .footer-bottom {
+                text-align: center;
+                padding-top: 20px;
+                border-top: 1px solid #eee;
+                color: #666;
+                font-size: 14px;
+            }
+
+            @media (max-width: 768px) {
+                .footer-content {
+                    grid-template-columns: 1fr;
+                    text-align: center;
+                }
+
+                .footer-logo {
+                    justify-content: center;
+                }
+
+                .social-links {
+                    justify-content: center;
+                }
+            }
+        </style>
+    </footer>
 </body>
 </html>

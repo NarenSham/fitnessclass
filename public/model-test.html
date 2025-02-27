@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Test</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #fce4ec; /* Set a background color */
+        }
+        #canvas {
+            position: fixed; /* Use fixed positioning */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Send the canvas to the background */
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js",
+            "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/"
+          }
+        }
+    </script>
+    <script type="module" src="main.js"></script> <!-- Include your main.js file as a module -->
+</body>
+</html> 

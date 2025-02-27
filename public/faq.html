@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ - FitnessClass</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Host Grotesk', sans-serif;
+            background-color: #F4F4F5;
+            color: #4E4E4E;
+            letter-spacing: 1px;
+        }
+
+        .header {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .app-title {
+            font-size: 24px;
+            margin: 0;
+            letter-spacing: 2px;
+            text-transform: lowercase;
+        }
+
+        .app-title .highlight {
+            color: #e91e63;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .faq-section {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .faq-section h2 {
+            color: #e91e63;
+            margin-bottom: 30px;
+            font-family: 'Host Grotesk', sans-serif;
+            letter-spacing: 1px;
+            font-size: 24px;
+        }
+
+        .faq-item {
+            margin-bottom: 25px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question {
+            color: #4E4E4E;
+            font-weight: 500;
+            margin-bottom: 15px;
+            font-family: 'Host Grotesk', sans-serif;
+            letter-spacing: 1px;
+            font-size: 18px;
+        }
+
+        .answer {
+            color: #666;
+            line-height: 1.6;
+            font-family: 'Host Grotesk', sans-serif;
+            letter-spacing: 1px;
+            font-size: 16px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #e91e63;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-family: 'Host Grotesk', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        .back-button:hover {
+            background-color: #d81557;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <svg width="40" height="40" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <g id="letterF">
+                        <line x1="35" y1="67" x2="35" y2="140" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="33" y1="70" x2="88" y2="45" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="35" y1="70" x2="80" y2="90" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                    <g id="letterC">
+                        <line x1="105" y1="36" x2="105" y2="165" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="161" x2="170" y2="125" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="40" x2="170" y2="70" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                </defs>
+                <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" fill="#F4F4F5" stroke="#4E4E4E" stroke-width="10" />
+                <use href="#letterF" />
+                <use href="#letterC" />
+            </svg>
+            <h1 class="app-title">fitness<span class="highlight">class</span></h1>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="faq-section">
+            <h2>Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <p class="question">How does FitnessClass create personalized workouts?</p>
+                <p class="answer">Our AI system analyzes multiple factors including your equipment availability, age, gender, height, weight, fitness goals, and experience level to create customized workout plans. The system continuously learns from your progress to provide increasingly tailored recommendations.</p>
+            </div>
+
+            <div class="faq-item">
+                <p class="question">Why use 3D demonstrations instead of videos?</p>
+                <p class="answer">Our WebGL-rendered 3D demonstrations allow you to view exercises from any angle without interrupting your audio. This means you can keep listening to your music or podcasts while checking proper form, providing a seamless workout experience.</p>
+            </div>
+
+            <div class="faq-item">
+                <p class="question">How can I track my progress?</p>
+                <p class="answer">FitnessClass provides an intuitive logging system where you can record your workouts, track progress over time, and easily revisit previous sessions. This helps maintain consistency and monitor your fitness journey.</p>
+            </div>
+
+            <div class="faq-item">
+                <p class="question">Is the AI recommendation system accurate?</p>
+                <p class="answer">While our AI system uses advanced algorithms to provide personalized recommendations, it's important to listen to your body and adjust workouts as needed. The system learns from your feedback to improve recommendations over time.</p>
+            </div>
+
+            <div class="faq-item">
+                <p class="question">Can I use FitnessClass without equipment?</p>
+                <p class="answer">Yes! Our AI system takes into account your available equipment and can create effective bodyweight workouts when no equipment is available.</p>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-button">Back to Home</a>
+    </div>
+</body>
+</html> 

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout History</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Host Grotesk', sans-serif;
+            background-color: #F4F4F5;
+            min-height: 100vh;
+            padding-bottom: 60px;
+            letter-spacing: 0.5px;
+            color: #666;
+        }
+
+        h1, h2, h3, h4 {
+            letter-spacing: 1px;
+            font-family: 'Host Grotesk', sans-serif;
+            color: #666;
+        }
+
+        .calendar-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .svg-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .month-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .month-navigation button {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+
+        .calendar-header {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+        .calendar-header span {
+            text-align: center;
+            font-weight: bold;
+            color: #666;
+            font-family: 'Host Grotesk', sans-serif;
+            
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #ffffff;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            color: #666;
+        }
+
+        .calendar-day:hover {
+            background: #e0e0e0;
+        }
+
+        .has-workout {
+            background: #666;
+            color: white;
+        }
+
+        .has-workout:hover {
+            background: #555;
+        }
+
+        .workout-details {
+            display: none;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .workout-details h3 {
+            color: #e91e63;
+            margin-top: 0;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .exercise-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #ffffff;
+            border-radius: 4px;
+            border-left: 4px solid #e91e63;
+        }
+
+        .exercise-item h4 {
+            margin-top: 0;
+            color: #e91e63;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .exercise-item p {
+            color: #666;
+            margin: 5px 0;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .nav-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px;
+            background: white;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+
+        .nav-icon {
+            padding: 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #666;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .nav-icon i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-icon span {
+            font-size: 10px;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        .nav-icon.active {
+            color: #e91e63;
+        }
+
+        .today {
+            background: #e91e63;
+            color: white;
+            font-weight: bold;
+        }
+
+        .today:hover {
+            background: #d81b60;
+        }
+
+        .muscle-groups {
+            background: #e91e63;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .muscle-groups p {
+            margin: 0;
+            font-size: 1.1em;
+            font-family: 'Host Grotesk', sans-serif;
+        }
+
+        #currentMonth {
+            color: #666;
+            letter-spacing: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <div class="svg-container">
+            <svg width="40" height="40" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <g id="letterF">
+                        <line x1="35" y1="67" x2="35" y2="140" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="33" y1="70" x2="88" y2="45" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="35" y1="70" x2="80" y2="90" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                    <g id="letterC">
+                        <line x1="105" y1="36" x2="105" y2="165" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="161" x2="170" y2="125" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                        <line x1="105" y1="40" x2="170" y2="70" stroke="#4E4E4E" stroke-width="10" stroke-linecap="butt" />
+                    </g>
+                </defs>
+                <polygon points="100,10 190,55 190,145 100,190 10,145 10,55" fill="#fce4ec" stroke="#4E4E4E" stroke-width="10" />
+                <use href="#letterF" />
+                <use href="#letterC" />
+            </svg>
+        </div>
+        <div class="month-navigation">
+            <button id="prevMonth">&lt;</button>
+            <h2 id="currentMonth">February 2025</h2>
+            <button id="nextMonth">&gt;</button>
+        </div>
+        <div class="calendar-header">
+            <span>Sun</span>
+            <span>Mon</span>
+            <span>Tue</span>
+            <span>Wed</span>
+            <span>Thu</span>
+            <span>Fri</span>
+            <span>Sat</span>
+        </div>
+        <div id="calendar" class="calendar"></div>
+        <div id="workoutDetails" class="workout-details"></div>
+    </div>
+
+    <div class="nav-footer">
+        <a href="login.html" class="nav-icon">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </a>
+        <a href="search.html" class="nav-icon">
+            <i class="fas fa-search"></i>
+            <span>Search</span>
+        </a>
+        <a href="workout-history.html" class="nav-icon active">
+            <i class="fas fa-calendar-alt"></i>
+            <span>Log</span>
+        </a>
+        <a href="view-workouts.html" class="nav-icon">
+            <i class="fas fa-dumbbell"></i>
+            <span>Workouts</span>
+        </a>
+        <a href="profile.html" class="nav-icon">
+            <i class="fas fa-user"></i>
+            <span>Profile</span>
+        </a>
+    </div>
+
+    <script>
+        let currentDate = new Date();
+        let workouts = new Map(); // Store workout data by date
+
+        async function fetchWorkouts(year, month) {
+            try {
+                const response = await fetch(`/api/workouts/${year}/${month}`);
+                if (!response.ok) throw new Error('Failed to fetch workouts');
+                const data = await response.json();
+                
+                // Clear existing workouts
+                workouts.clear();
+                
+                // Store workouts in the Map
+                data.workouts.forEach(workout => {
+                    const date = new Date(workout.date);
+                    workouts.set(date.toDateString(), workout);
+                });
+                
+                renderCalendar();
+            } catch (error) {
+                console.error('Error fetching workouts:', error);
+            }
+        }
+
+        function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            
+            document.getElementById('currentMonth').textContent = 
+                firstDay.toLocaleString('default', { month: 'long', year: 'numeric' });
+            
+            const calendar = document.getElementById('calendar');
+            calendar.innerHTML = '';
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendar.appendChild(createDayElement(''));
+            }
+            
+            // Add days of the month
+            for (let day = 1; day <= lastDay.getDate(); day++) {
+                const date = new Date(year, month, day);
+                const dayElement = createDayElement(day);
+                
+                // Mark today
+                if (date.toDateString() === new Date().toDateString()) {
+                    dayElement.classList.add('today');
+                }
+                
+                // Mark days with workouts
+                if (workouts.has(date.toDateString())) {
+                    dayElement.classList.add('has-workout');
+                    dayElement.addEventListener('click', () => showWorkoutDetails(date));
+                } else {
+                    // Add click event to clear workout details for days without workouts
+                    dayElement.addEventListener('click', () => {
+                        document.getElementById('workoutDetails').style.display = 'none';
+                    });
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+
+        function createDayElement(day) {
+            const div = document.createElement('div');
+            div.className = 'calendar-day';
+            div.textContent = day;
+            return div;
+        }
+
+        function showWorkoutDetails(date) {
+            const workout = workouts.get(date.toDateString());
+            const detailsDiv = document.getElementById('workoutDetails');
+            
+            if (!workout) {
+                detailsDiv.style.display = 'none';
+                return;
+            }
+            
+            // Get unique muscle groups from all exercises
+            const muscleGroups = new Set();
+            workout.exercises.forEach(exercise => {
+                if (exercise.muscleGroups) {
+                    exercise.muscleGroups.forEach(group => muscleGroups.add(group));
+                }
+            });
+            
+            let html = `
+                <h3>${date.toLocaleDateString()}</h3>
+                <div class="muscle-groups">
+                    <p><strong>Muscle Groups Worked:</strong> ${Array.from(muscleGroups).join(', ')}</p>
+                </div>
+                <div class="exercises">
+            `;
+            
+            workout.exercises.forEach(exercise => {
+                html += `
+                    <div class="exercise-item">
+                        <h4>${exercise.name}</h4>
+                        <p>${exercise.description}</p>
+                        <p><strong>Reps:</strong> ${exercise.reps}</p>
+                        <p><strong>Weight:</strong> ${exercise.weight}</p>
+                        <p><strong>Target Areas:</strong> ${exercise.muscleGroups ? exercise.muscleGroups.join(', ') : 'Not specified'}</p>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            detailsDiv.innerHTML = html;
+            detailsDiv.style.display = 'block';
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            fetchWorkouts(currentDate.getFullYear(), currentDate.getMonth());
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            fetchWorkouts(currentDate.getFullYear(), currentDate.getMonth());
+        });
+
+        // Initial load
+        fetchWorkouts(currentDate.getFullYear(), currentDate.getMonth());
+
+        function displayWorkoutDetails(workout) {
+            const workoutDetailsContainer = document.getElementById('workoutDetails');
+            workoutDetailsContainer.innerHTML = `
+                <h3>Workout for ${new Date(workout.date).toLocaleDateString()}</h3>
+                <p><strong>Duration:</strong> ${workout.duration} minutes</p>
+                <div class="exercise-list">
+                    ${workout.exercises.map((exercise, index) => `
+                        <div class="exercise-item">
+                            <h4>${index + 1}. ${exercise.name}</h4>
+                            <p>${exercise.description}</p>
+                            <p><strong>Reps:</strong> ${exercise.reps}</p>
+                            <p><strong>Weight:</strong> ${exercise.weight}</p>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            workoutDetailsContainer.style.display = 'block'; // Show the workout details
+        }
+    </script>
+</body>
+</html> 

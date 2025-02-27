@@ -18,15 +18,15 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // Lighting
-const light = new THREE.AmbientLight(0xffffff, 2);
+const light = new THREE.AmbientLight(0xffffff, 1);
 scene.add(light);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
 directionalLight.position.set(1, 3, 2);
 scene.add(directionalLight);
 
 // Add back light
-const backLight = new THREE.DirectionalLight(0xffffff, 0.5);
+const backLight = new THREE.DirectionalLight(0xffffff, 1);
 backLight.position.set(-1, 2, -2);
 scene.add(backLight);
 
@@ -34,10 +34,10 @@ let model, mixer;
 
 // Load GLB Model
 const loader = new GLTFLoader();
-loader.load('lowpoly9.glb', function (gltf) {
+loader.load('GLB/jumping_jacks.glb', function (gltf) {
     model = gltf.scene;
     model.position.set(0, 0, 0);
-    model.scale.set(1.3 , 1.3 , 1.3 ); // Adjusted scale to 1 for testing
+    model.scale.set(1.3, 1.3, 1.3); // Adjusted scale to 1 for testing
     scene.add(model);
 
     // Initialize mixer within the load callback
@@ -46,14 +46,14 @@ loader.load('lowpoly9.glb', function (gltf) {
     // Array of clips
     const clips = gltf.animations;
     console.log("Loaded animations:", clips); // Debugging log to see available animations
-    const clip = THREE.AnimationClip.findByName(clips, 'Regular Pushup'); // Find the clip named 'Test'
+    const clip = THREE.AnimationClip.findByName(clips, 'Action'); // Find the clip named 'Test'
     
     if (clip) {
         const action = mixer.clipAction(clip);
         action.play(); // Play the animation
         console.log("Playing animation:", clip.name); // Debugging log
     } else {
-        console.error("Clip named 'Test' not found.");
+        console.error("Clip named 'Standard' not found.");
     }
 
 }, undefined, function (error) {
@@ -87,18 +87,7 @@ window.addEventListener('mousedown', () => {
     }
 });
 
-// Create overlay text element
-const overlayText = document.createElement('div');
-overlayText.style.position = 'absolute';
-overlayText.style.top = '8px'; // Position from the top
-overlayText.style.left = '50%'; // Center horizontally
-overlayText.style.transform = 'translateX(-50%)'; // Adjust for centering
-overlayText.style.color = '1d1d1d'; // Text color
-overlayText.style.fontSize = '18px'; // Font size
-overlayText.style.fontFamily = 'Ariel, sans-serif'; // Change font type here
-overlayText.style.pointerEvents = 'none'; // Prevent mouse events on the text
-overlayText.innerText = 'Exercise 1'; // Set the text
-document.body.appendChild(overlayText);
+
 
 animate();
 
@@ -138,100 +127,3 @@ function updateTextExcerpt(title, description) {
 }
 
 // Example usage: Update text on a button click
-document.getElementById('someButton').addEventListener('click', () => {
-    updateTextExcerpt('New Type of Exercise', 'This is a new description based on user action.');
-});
-
-// Instead, display a welcome message
-const welcomeMessage = document.createElement('div');
-welcomeMessage.style.position = 'absolute';
-welcomeMessage.style.top = '50%'; // Center vertically
-welcomeMessage.style.left = '50%'; // Center horizontally
-welcomeMessage.style.transform = 'translate(-50%, -50%)'; // Adjust for centering
-welcomeMessage.style.color = '#1d1d1d'; // Text color
-welcomeMessage.style.fontSize = '24px'; // Font size
-welcomeMessage.style.fontFamily = 'Arial, sans-serif'; // Font type
-welcomeMessage.innerText = 'Welcome to the Application!'; // Set the welcome text
-document.body.appendChild(welcomeMessage);
-
-// Event listener for the "Go to Workout" button
-document.getElementById('goToWorkout').addEventListener('click', async () => {
-    // Parameters for the workout request
-    const params = {
-        weight: 70, // Example weight in kg
-        height: 175, // Example height in cm
-        age: 25, // Example age
-        gender: 'male', // Example gender
-        equipment: 'dumbbells', // Example equipment availability
-    };
-
-    try {
-        const response = await fetch('/api/getWorkouts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(params),
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const workouts = await response.json();
-        console.log('Workouts for the day:', workouts);
-
-        // Display the workouts on the page
-        displayWorkouts(workouts);
-    } catch (error) {
-        console.error('Error fetching workouts:', error);
-    }
-});
-
-// Function to display workouts on the page
-function displayWorkouts(workouts) {
-    // Clear any existing workout display
-    const workoutContainer = document.getElementById('workoutContainer');
-    workoutContainer.innerHTML = ''; // Clear previous workouts
-
-    // Create a list to display workouts
-    const workoutList = document.createElement('ul');
-
-    // Assuming workouts is an array of workout objects
-    workouts.forEach(workout => {
-        const listItem = document.createElement('li');
-        listItem.textContent = workout; // Adjust this based on the structure of the response
-        workoutList.appendChild(listItem);
-    });
-
-    workoutContainer.appendChild(workoutList);
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    // Example of making a POST request to get workouts
-    const getWorkouts = async () => {
-        const response = await fetch('/api/getWorkouts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                weight: 70, // Example weight
-                height: 175, // Example height
-                age: 25, // Example age
-                gender: 'male', // Example gender
-                equipment: 'dumbbells', // Example equipment
-            }),
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data); // Handle the response data
-        } else {
-            console.error('Error fetching workouts:', response.statusText);
-        }
-    };
-
-    // Call the function to get workouts
-    getWorkouts();
-});
