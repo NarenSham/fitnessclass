@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 # _fitnessClass
 
-This is my concept for fitnessclass.ca !
+Experience the future of fitness with AI-powered workout recommendations and seamless 3D exercise demonstrations.
 
 =======
 # fitnessclass
