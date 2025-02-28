@@ -181,6 +181,81 @@
             width: 100%;
             display: block;
         }
+
+        .forgot-password-btn {
+            background: none;
+            border: none;
+            color: #e91e63;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 400px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .modal-content h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .modal-content button {
+            background-color: #e91e63;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:last-child {
+            background-color: #666;
+        }
+
+        #resetMessage {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        #resetMessage.success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        #resetMessage.error {
+            background-color: #ffebee;
+            color: #c62828;
+        }
     </style>
 </head>
 <body>
@@ -220,6 +295,20 @@
         </form>
         <div class="register-link">
             Don't have an account? <a href="register.html">Register</a>
+        </div>
+        <div class="forgot-password-container">
+            <button id="forgotPasswordBtn" class="forgot-password-btn">Forgot Password?</button>
+            
+            <div id="resetPasswordModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3>Reset Password</h3>
+                    <p>Enter your username to reset your password</p>
+                    <input type="text" id="resetUsername" placeholder="Username">
+                    <button id="submitResetBtn">Reset Password</button>
+                    <button id="closeModalBtn">Cancel</button>
+                    <div id="resetMessage" style="display: none;"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -328,6 +417,65 @@
 
         // Check login status when page loads
         document.addEventListener('DOMContentLoaded', checkLoginStatus);
+
+        document.getElementById('forgotPasswordBtn').addEventListener('click', () => {
+            document.getElementById('resetPasswordModal').style.display = 'block';
+        });
+
+        document.getElementById('closeModalBtn').addEventListener('click', () => {
+            document.getElementById('resetPasswordModal').style.display = 'none';
+            document.getElementById('resetMessage').style.display = 'none';
+            document.getElementById('resetUsername').value = '';
+        });
+
+        document.getElementById('submitResetBtn').addEventListener('click', async () => {
+            const username = document.getElementById('resetUsername').value;
+            const resetMessage = document.getElementById('resetMessage');
+            
+            try {
+                const response = await fetch('/api/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resetMessage.textContent = `Your temporary password is: ${data.temporaryPassword}
+                        Please login with this password and change it immediately.`;
+                    resetMessage.className = 'success';
+                } else {
+                    resetMessage.textContent = data.error || 'Failed to reset password';
+                    resetMessage.className = 'error';
+                }
+                resetMessage.style.display = 'block';
+                
+                // Hide the message and modal after 10 seconds
+                setTimeout(() => {
+                    resetMessage.style.display = 'none';
+                    document.getElementById('resetPasswordModal').style.display = 'none';
+                    document.getElementById('resetUsername').value = '';
+                }, 10000);
+
+            } catch (error) {
+                resetMessage.textContent = 'An error occurred. Please try again.';
+                resetMessage.className = 'error';
+                resetMessage.style.display = 'block';
+            }
+        });
+
+        // Close modal when clicking outside
+        window.onclick = (event) => {
+            const modal = document.getElementById('resetPasswordModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                document.getElementById('resetMessage').style.display = 'none';
+                document.getElementById('resetUsername').value = '';
+            }
+        }
     </script>
 
     <footer class="site-footer">
@@ -360,7 +508,7 @@
             <div class="footer-section">
                 <h4>Quick Links</h4>
                 <ul>
-                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="about.html">About</a></li>
                     <li><a href="faq.html">FAQ</a></li>
                     <li><a href="contact.html">Contact</a></li>
                 </ul>

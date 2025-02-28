@@ -60,37 +60,44 @@ async function startServer() {
         "Arm Circles": {
             glbPath: "GLB/arm_circles.glb",
             muscleGroups: ["shoulders", "arms"],
-            difficulty: "beginner"
+            difficulty: "beginner",
+            equipment: ["no-equipment"] // Can be done with no equipment
         },
         "Burpees": {
             glbPath: "GLB/burpee.glb",
             muscleGroups: ["full body", "cardio"],
-            difficulty: "advanced"
+            difficulty: "advanced",
+            equipment: ["no-equipment"]
         },
         "Bodyweight Push-ups": {
             glbPath: "GLB/Bodyweight_pushup.glb",
             muscleGroups: ["chest", "triceps", "shoulders"],
-            difficulty: "intermediate"
+            difficulty: "intermediate",
+            equipment: ["no-equipment"]
         },
         "T Push-ups": {
             glbPath: "GLB/t_pushup.glb",
             muscleGroups: ["chest", "shoulders", "core"],
-            difficulty: "intermediate"
+            difficulty: "intermediate",
+            equipment: ["no-equipment"]
         },
         "Breakdance Push-ups": {
             glbPath: "GLB/breakdance_pushup.glb",
             muscleGroups: ["chest", "shoulders", "core"],
-            difficulty: "advanced"
+            difficulty: "advanced",
+            equipment: ["no-equipment"]
         },
         "Dive Bomb Push-ups": {
             glbPath: "GLB/divebomb_pushup.glb",
             muscleGroups: ["shoulders", "chest", "triceps"],
-            difficulty: "advanced"
+            difficulty: "advanced",
+            equipment: ["no-equipment"]
         },
         "Diamond Pushups": {
             glbPath: "GLB/Diamond_pushup.glb",
             muscleGroups: ["triceps", "chest"],
-            difficulty: "intermediate"
+            difficulty: "intermediate",
+            equipment: ["no-equipment"]
         },
         "Shoulder Taps": {
             glbPath: "GLB/shoulder_taps.glb",
@@ -100,32 +107,38 @@ async function startServer() {
         "Squats": {
             glbPath: "GLB/Bodyweight_squat.glb",
             muscleGroups: ["legs", "glutes"],
-            difficulty: "beginner"
+            difficulty: "beginner",
+            equipment: ["no-equipment"]
         },
         "Lunges (each leg)": {
             glbPath: "GLB/fwd_lunge.glb",
             muscleGroups: ["legs", "glutes"],
-            difficulty: "beginner"
+            difficulty: "beginner",  
+            equipment: ["no-equipment"]
         },
         "Plank": {
             glbPath: "GLB/standard_plank.glb",
             muscleGroups: ["core", "shoulders"],
-            difficulty: "beginner"
+            difficulty: "beginner",
+            equipment: ["no-equipment"]
         },
         "Side Plank": {
             glbPath: "GLB/side_plank.glb",
             muscleGroups: ["core", "obliques"],
-            difficulty: "intermediate"
+            difficulty: "intermediate",
+            equipment: ["no-equipment"]
         },
         "Mountain Climbers": {
             glbPath: "GLB/Mountainclimber_pushup.glb",
             muscleGroups: ["core", "cardio"],
-            difficulty: "intermediate"
+            difficulty: "intermediate",
+            equipment: ["no-equipment"]
         },
         "Jumping Jacks": {
             glbPath: "GLB/jumping_jacks.glb",
             muscleGroups: ["cardio", "full body"],
-            difficulty: "beginner"
+            difficulty: "beginner",
+            equipment: ["no-equipment"]
         }
     };
 
@@ -343,12 +356,42 @@ async function startServer() {
     }
 
     function generateWorkoutPrompt(profile, recentWorkouts) {
-        // Convert recent workouts into a summary
+        // Ensure profile and equipment exist with proper defaults
+        const userProfile = profile || {};
+        const userEquipment = Array.isArray(userProfile.equipment) ? userProfile.equipment : ['no-equipment'];
+        
+        // Filter available exercises based on user's equipment
+        const availableExercises = Object.entries(WORKOUT_LIBRARY)
+            .filter(([_, exercise]) => {
+                // Ensure exercise has equipment property
+                if (!exercise.equipment) {
+                    exercise.equipment = ['no-equipment'];
+                }
+                
+                // If user has selected no-equipment or no equipment is specified, only return bodyweight exercises
+                if (!userEquipment.length || userEquipment.includes('no-equipment')) {
+                    return exercise.equipment.includes('no-equipment');
+                }
+                // Otherwise, return exercises that can be done with user's equipment
+                return exercise.equipment.some(eq => userEquipment.includes(eq));
+            })
+            .map(([name, _]) => name);
+
+        // Ensure we have at least some exercises available
+        if (availableExercises.length === 0) {
+            console.warn('No exercises available for the selected equipment, defaulting to bodyweight exercises');
+            availableExercises = Object.entries(WORKOUT_LIBRARY)
+                .filter(([_, exercise]) => exercise.equipment.includes('no-equipment'))
+                .map(([name, _]) => name);
+        }
+
         let recentWorkoutSummary = recentWorkouts.map(workout => {
             const exerciseNames = workout.exercises.map(ex => ex.name);
             const muscleGroups = new Set();
             exerciseNames.forEach(name => {
-                getMuscleGroups(name).forEach(group => muscleGroups.add(group));
+                if (WORKOUT_LIBRARY[name] && WORKOUT_LIBRARY[name].muscleGroups) {
+                    WORKOUT_LIBRARY[name].muscleGroups.forEach(group => muscleGroups.add(group));
+                }
             });
             
             return {
@@ -358,28 +401,34 @@ async function startServer() {
             };
         });
 
-        return `Generate a workout routine for a ${profile.age} year old ${profile.gender}, 
-        weight: ${profile.weight}kg, height: ${profile.height}cm, 
-        duration: ${profile.workoutDuration} minutes, 
-        equipment available: ${profile.hasEquipment ? 'basic equipment' : 'bodyweight only'}.
+        // Log debug information
+        console.log('User Equipment:', userEquipment);
+        console.log('Available Exercises:', availableExercises);
+
+        return `Generate a workout routine for a ${userProfile.age || 30} year old ${userProfile.gender || 'person'}, 
+        weight: ${userProfile.weight || 70}kg, height: ${userProfile.height || 170}cm, 
+        duration: ${userProfile.workoutDuration || 30} minutes.
+        
+        IMPORTANT: You MUST ONLY select exercises from this list: ${availableExercises.join(', ')}
+        These exercises are specifically chosen based on the user's available equipment: ${userEquipment.join(', ')}.
         
         Recent workout history (past ${recentWorkouts.length} days):
         ${JSON.stringify(recentWorkoutSummary, null, 2)}
 
-        Available exercises and their muscle groups:
-        ${Object.entries(WORKOUT_LIBRARY)
-            .map(([name, data]) => `${name}: ${data.muscleGroups.join(', ')} (${data.difficulty})`)
-            .join('\n')}
+        Available exercises and their details:
+        ${availableExercises.map(name => {
+            const exercise = WORKOUT_LIBRARY[name];
+            return `${name}: ${exercise.muscleGroups.join(', ')} (${exercise.difficulty})`;
+        }).join('\n')}
 
         Important guidelines:
-        1. Avoid exercises that target the same muscle groups used heavily in recent workouts
-        2. Ensure adequate recovery time between similar exercises
-        3. Provide a balanced workout that complements previous routines
-        4. Focus on muscle groups that haven't been worked recently
-        5. Consider the user's profile and available equipment
-        6. Mix different difficulty levels appropriately
-        
-        Select exercises ONLY from the provided list and format the response as a JSON object.`;
+        1. Only select exercises from the provided list that match the user's equipment
+        2. Avoid exercises that target the same muscle groups used heavily in recent workouts
+        3. Ensure adequate recovery time between similar exercises
+        4. Provide a balanced workout that complements previous routines
+        5. Mix different difficulty levels appropriately
+
+        Format the response as a JSON object.`;
     }
 
     // Function to generate workout using LLM
@@ -670,6 +719,41 @@ async function startServer() {
     // Add endpoint to get workout library
     app.get('/api/workout-library', isAuthenticated, (req, res) => {
         res.json(WORKOUT_LIBRARY);
+    });
+
+    app.post('/api/reset-password', async (req, res) => {
+        try {
+            const { username } = req.body;
+            
+            // First check if user exists
+            const user = await User.findOne({ username });
+            if (!user) {
+                return res.status(404).json({ 
+                    success: false, 
+                    error: 'User not found' 
+                });
+            }
+
+            const newPassword = "temporary_password"; // Or generate a random password
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+            
+            await User.findOneAndUpdate(
+                { username: username },
+                { $set: { password: hashedPassword } }
+            );
+
+            res.json({ 
+                success: true, 
+                message: 'Password has been reset',
+                temporaryPassword: newPassword 
+            });
+        } catch (error) {
+            console.error('Password reset error:', error);
+            res.status(500).json({ 
+                success: false, 
+                error: 'Failed to reset password' 
+            });
+        }
     });
 
     app.listen(port, () => {
